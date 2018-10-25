@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko-KR">
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+	<meta charset="UTF-8">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/p5.js"></script>
+	  
+	<script src="static/js/sketch.js"></script>
+	<script src="static/js/p5.dom.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet">
+  <script>
+   $('document').ready(function(){
+     $('#search').on('click',function(){
+       var target = document.getElementById('url').value;
+      
+     })
+
+   })
+
+   function toDataURL(){
+   
+   var myImage = document.getElementById('imageName');
+    myImage.value = canvas.toDataURL();
+
+   }
+
+   
+
+  
+  </script>
+	<link rel="stylesheet" href="static/css/style.css"> 
+
+	<title>Mosaic</title>
+</head>
+
+
+<body>
+<% include sideMenu.ejs %>
+<div class="container">
+<form action="/" method="post" >
+ <span>URL:</span><input type="text" id="url" name="url" ></input>
+  
+ <button class="search" type="submit">Search</button></button>
+</form>
+
+ <div id="poster" style="display: none;"><%=result%></div>
+  <div id="image" style="display: none;"><img src="<%=result%>"></div>
+  <div id="synopsis" style="display: none;"><%=resultText%></div>
+  <h2 id="title"><%=titleText%></h2>
+  <span class="time"><%=DateText%></span>
+</div>
+
+ 
+  <form action="/gallery" method="post" class="image-save">
+   <textarea type="text" id="imageName" name="imageName" style="display: none;"></textarea>
+   <button class="search" onclick="toDataURL();" type="submit" >Save Image</button>
+  </form>
+  
+</body>
+
+</html>

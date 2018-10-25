@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko-KR">
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+	<meta charset="UTF-8">
+
+	
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Merriweather" rel="stylesheet">
+  <script>
+  
+  
+  
+  </script>
+	<link rel="stylesheet" href="static/css/style.css"> 
+
+	<title>Mosaic gallery</title>
+</head>
+
+
+<body>
+<% include sideMenu.ejs %>
+<div class="container-gallery">
+   <% products.forEach( function(product){ %>
+        <img class="myImage" src="<%=product.photoImage%>"/>
+        <%});%>
+</div>
+
+ 
+
+</body>
+
+</html>
