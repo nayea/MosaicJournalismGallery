@@ -1,178 +1,121 @@
-var img;
+
+var myImage;
+var sampledImage;
+var sampledText;
 var myFont;
+var mouseCount = 0;
 var value = 0;
+var partitionX = 5; 
+var partitionY = 10; 
 
 function preload() {
  
    var imageUrl = select("#poster").elt.innerHTML;
-
     myFont = loadFont('static/assets/Lansdowne DEMO.otf');
     myImage = loadImage(imageUrl);
 }
 
 function setup(){
-    background(0);
-    noStroke();
+    
     colorMode(RGB, 255, 255, 255, 1);
-    var cnv = createCanvas(600,400); 
+    createCanvas(myImage.width, myImage.height);
+    background(153);
     var imageText = select("#synopsis").elt.innerHTML;
     var titleText = select("#title").elt.innerHTML;
 
-    
-    var partition = 5; 
-    var partition2 = 10; 
-    var widthsize = parseInt(width/partition);
-    var heightsize = parseInt(height/partition);
-    var widthsize2 = parseInt(width/partition2);
-    var heightsize2 = parseInt(height/partition2);
    
-
-    var newText = new Array(widthsize);
-    for (var a = 0; a< widthsize; a++){
-        newText[a] = new Array(heightsize);
-    }
-
-    var newText2 = new Array(widthsize2);
-    for (var b = 0; b< widthsize2; b++){
-        newText2[b] = new Array(heightsize2);
-    }
-
-    var textArray = new Array();
-    var textArrayMake = new Array();
-
-    var textArrayFirst = new Array();
+     // make sampled image, refer it as original pixel colors
+     var temp = get(0,0,myImage.width/partitionX,myImage.height/partitionY);
+     image(myImage,0,0,myImage.width/partitionX,myImage.height/partitionY);
+     sampledImage = get(0,0,myImage.width/partitionX,myImage.height/partitionY);
+     image(temp,0,0,myImage.width/partitionX,myImage.height/partitionY);
+     sampledText = imageText;
+     // Overlap Original Image 
+     tint(255, 80); 
+     image(myImage, 0, 0);
+     noTint();
 
 
-    
-  var fontCount = 0;
+   testAsRect();
 
-    for(var j= 0; j< heightsize2; j++){
-        for(var i = 0; i< widthsize2; i++){
+
             
-       
-             newText2[i][j] = imageText.substring(fontCount,fontCount+1);
-   
-       
-
-        // if(newText[i][j] === ''){
-        //     newText[i][j] = char(int(random(65,91))).toLowerCase();
-          
-        // }
-        fontCount++;
-       }
-   }
-
-   for(var k= 0; k< heightsize; k++){
-    for(var t = 0; t< widthsize; t++){
-        
-   
-         newText[t][k] = imageText.substring(fontCount,fontCount+1);
-
-    fontCount++;
-   }
-}
-
-var titleNum = 0;
-
-
-
-var textArrayMake = titleText.split(" ");
-var newTitle = textArrayMake.join("");
-
-    for(var c = 0; c<textArrayMake.length; c++){
-        textArrayFirst[c] = textArrayMake[c].substring(titleNum,titleNum+1);
-    //titleNum++;
-   }
-
-
-
-
-
-   var yOriginCount = 0;
-   var xOriginCount = 0;
- 
-    for (var x=0; x<width; x+=partition) {
-        for (var y=0; y<height; y+=partition) {
-           
-         
-               xOriginCount = parseInt(x/partition);
-               yOriginCount = parseInt(y/partition);
-              
-              
-               backgroundBasedOnSampleColor(myImage.get(x, y),x,y,newText,xOriginCount,yOriginCount)
-            
-              
-           } 
-           
-       }
-
-       var yOriginCount2 = 0;
-       var xOriginCount2 = 0;
-       var textArrayCount = 0;
-       var clickCount = 0;
-       
-        for (var x=0; x<width; x+=partition2) {
-            for (var y=0; y<height; y+=partition2) {
-               
-             
-                   xOriginCount2 = parseInt(x/partition2);
-                   yOriginCount2 = parseInt(y/partition2);
-             
-                 
-                  textBasedOnSampleColor(myImage.get(x, y),x,y,newText2,xOriginCount2,yOriginCount2)
-               
-                
-               } 
-               
-           } 
-
-    
-
-     
-      
 }
 
 function draw(){
    
-
-}
-function mouseClicked() {
-    if (value === 0) {
-      value = 255;
-    } else {
-      value = 0;
+    if(value%2 === 0 && value !== 0){
+        tint(255, 100); 
+        image(myImage, 0, 0);
+        noTint();
+        testAsRectReturn();
+    
+       console.log(value);
     }
+    else if(value === 0){
+        
+    }
+    else{
+        background(255);
+        console.log("W");
+    }
+    
+    StringTileMosaics();
+}
+
+
+function mousePressed(){
+  value++;
+  loop();
+}
+
+function mouseReleased(){
+    noLoop();
   }
 
-function textBasedOnSampleColor(c,x,y,newText,xOriginCount,yOriginCount) {
-    
-        let colorC = color(c[0], c[1], c[2], map(brightness(c), 125, 0, .3, 1));
-        
-       
-       // fill(colorC);
-        fill(c);
-        textFont(myFont, map(brightness(colorC),  125, 0, 7, 25)); 
-        text(newText[xOriginCount][yOriginCount], x, y);
-       
+// String Tile Mosaic
+function StringTileMosaics() {
+    var count = 0;
+    textFont(myFont);
+    textSize(partitionY+partitionX);
+    for(var y=0;y<sampledImage.height;y++) {
+        for(var x=0;x<sampledImage.width;x++) {
+            var c = sampledImage.get(x,y);
+            // add shadow or glow on each character
+            fill(155-brightness(c),150);
+            text(sampledText.charAt(count),x*partitionX+1, y*partitionY+8);
+            // write character with original color
+            fill(c);
+            text(sampledText.charAt(count),x*partitionX, y*partitionY+7);
+            count = (count+1)%sampledText.length;
+        }
+    }
 }
 
 
+// test original image tiling mosaic
+function testAsRect() {
+    noStroke();
+    for(var x=0;x<sampledImage.width;x++) {
+        for(var y=0;y<sampledImage.height;y++) {
+            var c = sampledImage.get(x,y);
+            fill(red(c),green(c),blue(c),random(0.3,1));
+            // slightly overlap with error... just for fun... 
+            rect(x*partitionX+random(-3,3), y*partitionY+random(-3,3), partitionX+random(-3,5), partitionY+random(-3,5));
+        }
+    }
+}
 
-function backgroundBasedOnSampleColor(c,x,y,newText2,xOriginCount,yOriginCount) {
-    
-
-    let colorC = color(c[0], c[1], c[2], map(brightness(c), 125, 0, .5, 1));
-    
-    if(map(brightness(c), 125, 0, 5, 20) < 13){
-        fill(c);
-        // rect(xOriginCount,yOriginCount,x,y);
-        rect(x,y,map(brightness(c), 125, 0, 2, 10),map(brightness(c), 125, 0, 2, 10));
-       
+function testAsRectReturn() {
+    noStroke();
+    for(var x=0;x<sampledImage.width;x++) {
+        for(var y=0;y<sampledImage.height;y++) {
+            var c = sampledImage.get(x,y);
+            fill(red(c),green(c),blue(c),random(220));
         
-     }
-
-    
+            rect(x*partitionX, y*partitionY, partitionX, partitionY);
+        }
+    }
 }
 
 
-    
